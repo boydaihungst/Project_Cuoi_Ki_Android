@@ -1,0 +1,60 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+    <PreferenceCategory android:title="Play Music/Video">
+        <ListPreference
+            android:defaultValue='128'
+            android:entries="@array/pref_quality_select"
+            android:entryValues="@array/pref_quality_select_values"
+            android:key="@string/pref_key_quality_select"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="Auto select quality when playing"
+            android:title="@string/pref_title_quality_select" />
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_defaultValue_play_all_playlist"
+            android:key="@string/pref_key_play_all_playlist"
+            android:summary="@string/pref_summary_play_all_playlist"
+            android:title="@string/pref_title_play_all_playlist" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Headset">
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_defaultValue_Headset_Out"
+            android:key="@string/pref_key_Headset_Out"
+            android:summary="@string/pref_summary_Headset_Out"
+            android:title="@string/pref_title_Headset_Out" />
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_defaultValue_Headset_In"
+            android:key="@string/pref_key_Headset_In"
+            android:summary="@string/pref_summary_Headset_In"
+            android:title="@string/pref_title_Headset_In" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="History">
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_defaultValue_history_search"
+            android:key="@string/pref_key_history_search"
+            android:summary="@string/pref_summary_history_search"
+            android:title="@string/pref_title_history_search" />
+        <!--<PreferenceScreen-->
+            <!--android:key="deleteSearchPrefScreenPref"-->
+            <!--android:summary="Delete all search history"-->
+            <!--android:title="Delete search history"/>-->
+        <!--<PreferenceScreen-->
+            <!--android:key="deleteListenPrefScreenPref"-->
+            <!--android:summary="Delete all listen history"-->
+            <!--android:title="Delete listen history"/>-->
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Display">
+        <ListPreference
+            android:defaultValue="EN"
+            android:entries="@array/pref_language_select"
+            android:entryValues="@array/pref_language_select_values"
+            android:key="@string/pref_key_language_select"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="@string/pref_summary_language_select"
+            android:title="@string/pref_title_language_select" />
+    </PreferenceCategory>
+</PreferenceScreen>

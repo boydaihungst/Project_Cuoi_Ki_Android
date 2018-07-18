@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">Project_Cuoi_Ki_Android</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Login</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="toast_close_mess">Please click Back again to exit!</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <!--play musdic/video-->
+    <!--array quanlity music-->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_quality_select">Quality music</string>
+    <string name="pref_key_quality_select">quality_select</string>
+    <string-array name="pref_quality_select">
+        <item>32 kbps</item>
+        <item>128 kbps</item>
+        <item>320 kbps</item>
+        <item>500 kbps</item>
+        <item>Lossless</item>
+    </string-array>
+    <string-array name="pref_quality_select_values">
+        <item>32</item>
+        <item>128</item>
+        <item>320</item>
+        <item>500</item>
+        <item>1000</item>
+    </string-array>
+    <!--play all play list-->
+    <string name="pref_title_play_all_playlist">Play All playlist</string>
+    <string name="pref_key_play_all_playlist">PlayAllPref</string>
+    <string name="pref_summary_play_all_playlist">If not check this play only selected song</string>
+    <string name="pref_defaultValue_play_all_playlist">true</string>
+
+    <!--headset-->
+    <!--pull out-->
+    <string name="pref_title_Headset_Out">Headphone pulled out</string>
+    <string name="pref_key_Headset_Out">HeadsetOutPref</string>
+    <string name="pref_summary_Headset_Out">Pause playback when headphone pulled out</string>
+    <string name="pref_defaultValue_Headset_Out">true</string>
+    <!--pull in-->
+    <string name="pref_title_Headset_In">Headphone pulled in</string>
+    <string name="pref_key_Headset_In">HeadsetInPref</string>
+    <string name="pref_summary_Headset_In">Resume playback when the headphone plugged in</string>
+    <string name="pref_defaultValue_Headset_In">false</string>
+    <!--history-->
+    <string name="pref_title_history_search">Save search history</string>
+    <string name="pref_key_history_search">SaveSearchHistoryPref</string>
+    <string name="pref_summary_history_search">if not check stop save search history</string>
+    <string name="pref_defaultValue_history_search">true</string>
+
+    <!--display-->
+    <!--language-->
+    <string name="pref_title_language_select">Language</string>
+    <string name="pref_key_language_select">languagePref</string>
+    <string name="pref_summary_language_select">The language displayed in the application</string>
+    <string-array name="pref_language_select">
+        <item>English</item>
+        <item>Vietnamses</item>
+    </string-array>
+    <string-array name="pref_language_select_values">
+        <item>EN</item>
+        <item>VN</item>
+    </string-array>
+
+    <string name="TitleMusicPager">Musics</string>
+    <!--String [] TabTile= {"Songs","Albums","Artists","folders"-->
+<string-array name="tab_title">
+    <item>Songs</item>
+    <item>Albums</item>
+    <item>Artists</item>
+    <item>Playlist</item>
+</string-array>
+</resources>
