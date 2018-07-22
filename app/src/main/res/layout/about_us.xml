@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/about_us_picture"
+    android:weightSum="100">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAlignment="center"
+    android:text="About us"
+    android:textColor="#f4912f"
+    android:textSize="35sp"
+    android:layout_marginTop="130dp"
+    android:background="#7d030303"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Sản Phẩm project cuối kì môn PRM391"
+        android:textColor="#fafafa"
+        android:textSize="20sp"
+        android:background="#7d030303"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Thành viên"
+        android:textColor="#00a6ff"
+        android:textSize="35sp"
+        android:layout_marginTop="30dp"
+        android:background="#7d030303"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Đào Huy Hoàng - nhóm trưởng"
+        android:textColor="#34f400"
+        android:textSize="20sp"
+        android:background="#7d030303"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Trần Hoàng Thịnh"
+        android:textColor="#00ff2f"
+        android:textSize="20sp"
+        android:background="#7d030303"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Trần Văn Thắng"
+        android:textColor="#00ff2f"
+        android:textSize="20sp"
+        android:background="#7d030303"
+        />
+</LinearLayout>

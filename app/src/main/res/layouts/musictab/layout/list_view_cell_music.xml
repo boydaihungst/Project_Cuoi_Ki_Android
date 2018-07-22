@@ -3,8 +3,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/demo">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +16,8 @@
             android:id="@+id/tvSongPicture"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:gravity="left"/>
+            android:gravity="left"
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -28,10 +30,11 @@
                 android:id="@+id/tvSongName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:text="Lac troi"
                 android:textColor="@color/white"
                 android:textSize="15sp"
+                android:singleLine="true"
                 android:textStyle="normal"
                 android:maxWidth="200dp"
                 android:ellipsize="end"
@@ -41,8 +44,9 @@
                 android:id="@+id/tvArtist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:text="Son tung MTP"
+                android:singleLine="true"
                 android:textSize="16sp"
                 android:textStyle="italic"
                 android:maxWidth="200dp"

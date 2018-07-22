@@ -10,6 +10,13 @@ public class Playlist implements Parcelable {
 
     public Playlist() {
     }
+
+    public Playlist(int id, String title, int numSong) {
+        this.id = id;
+        this.title = title;
+        this.numSong = numSong;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -62,5 +69,10 @@ public class Playlist implements Parcelable {
 
     public void setNumSong(int numSong) {
         this.numSong = numSong;
+    }
+
+    @Override
+    public String toString() {
+        return this.title;
     }
 }

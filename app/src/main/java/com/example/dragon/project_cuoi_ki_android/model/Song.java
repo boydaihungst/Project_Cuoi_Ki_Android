@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.concurrent.TimeUnit;
+
 public class Song implements Parcelable {
     private int id;
     private String title;
@@ -15,7 +17,7 @@ public class Song implements Parcelable {
     private int numView;
     private String quality;
     private String url;
-
+    private String lyrics;
     public Song() {
     }
 
@@ -35,6 +37,7 @@ public class Song implements Parcelable {
         dest.writeString(quality);
         dest.writeString(url);
         dest.writeInt(id);
+        dest.writeString(lyrics);
     }
 
     protected Song(Parcel in) {
@@ -47,6 +50,7 @@ public class Song implements Parcelable {
         quality = in.readString();
         url = in.readString();
         id = in.readInt();
+        lyrics = in.readString();
     }
 
     public static final Creator<Song> CREATOR = new Creator<Song>() {
@@ -60,6 +64,21 @@ public class Song implements Parcelable {
             return new Song[size];
         }
     };
+    public String durationToMinute()  {
+        double durationMinute = duration / 60000.0;
+        int _durationSecond = ((int) ((durationMinute - (int) durationMinute) * 60));
+        String durationSecond = String.valueOf(_durationSecond);
+        durationSecond = durationSecond.length() == 1 ? "0" + durationSecond : durationSecond;
+        return (int) durationMinute + ":" + durationSecond;
+    }
+
+    public String getLyrics() {
+        return lyrics;
+    }
+
+    public void setLyrics(String lyrics) {
+        this.lyrics = lyrics;
+    }
 
     public String getUrl() {
         return url;
@@ -139,5 +158,14 @@ public class Song implements Parcelable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this==obj) return true;
+        if (this == null) return false;
+        if (this.getClass() != obj.getClass()) return false;
+        Song s = (Song)obj;
+        return s.getId() == this.id;
     }
 }

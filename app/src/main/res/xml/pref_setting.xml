@@ -1,4 +1,4 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"    >
 
     <!-- These settings headers are only used on tablets. -->
     <PreferenceCategory android:title="Play Music/Video">

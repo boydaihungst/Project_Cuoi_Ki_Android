@@ -2,21 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-    <item android:title="Account"
-        android:id="@+id/Drawer_title_account">
-        <menu>
-            <group   android:checkableBehavior="single">
-                <item
-                    android:id="@+id/login"
-                    android:icon="@drawable/ic_person_black_24dp"
-                    android:title="Login" />
-                <item
-                    android:id="@+id/favorite"
-                    android:icon="@drawable/ic_favorite_black_24dp"
-                    android:title="Favorite" />
-            </group>
-        </menu>
-    </item>
     <item android:title="Offline"
         android:id="@+id/Drawer_title_offline">
         <menu>
@@ -25,18 +10,6 @@
                     android:id="@+id/offmusic"
                     android:icon="@drawable/ic_library_music_black_24dp"
                     android:title="Musics" />
-                <item
-                    android:id="@+id/history"
-                    android:icon="@drawable/ic_history_black_24dp"
-                    android:title="History" />
-                <item
-                    android:id="@+id/playlist"
-                    android:icon="@drawable/ic_playlist_play_black_24dp"
-                    android:title="Playlist" />
-                <item
-                    android:id="@+id/downloading"
-                    android:icon="@drawable/ic_cloud_download_black_24dp"
-                    android:title="Downloading" />
             </group>
         </menu>
     </item>

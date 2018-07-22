@@ -1,17 +1,13 @@
 package com.example.dragon.project_cuoi_ki_android.offlineMusic.music;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -21,9 +17,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.dragon.project_cuoi_ki_android.Controller.FragmentBroadcast;
 import com.example.dragon.project_cuoi_ki_android.R;
+import com.example.dragon.project_cuoi_ki_android.Utils.Utils;
 import com.example.dragon.project_cuoi_ki_android.model.Song;
+import com.example.dragon.project_cuoi_ki_android.offlineMusic.playlist.AddSongPlaylistDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,11 +31,12 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MusicTabFragment extends Fragment implements AdapterView.OnItemLongClickListener {
+public class MusicTabFragment extends Fragment implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
     private ListView lvMusic;
     private ArrayList<Song> listSong = new ArrayList<>();
     private Song longPressItem;
     private ArrayAdapter arrayAdapter;
+    private FragmentBroadcast broadcast;
 
     public MusicTabFragment() {
     }
@@ -64,18 +65,32 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
         this.arrayAdapter = arrayAdapter;
     }
 
+    dataTransaction listener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.music_fragment, container, false);
         lvMusic = view.findViewById(R.id.lvMusic);
-//        loadTab();
-        MusicTabAsynTask musicTabAsynTask = new MusicTabAsynTask(this);
-        //Gọi hàm execute để kích hoạt tiến trình
-        musicTabAsynTask.execute();
+        refreshFragment();
         // Register the ListView  for Context menu
-
         return view;
+    }
+
+    public interface dataTransaction {
+        void playThisSong(Song song);
+
+        void updateListSongDB(Song listSongInDB);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof dataTransaction) {
+            listener = (dataTransaction) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement interface");
+        }
     }
 
     public MenuInflater getMenuInflater() {
@@ -85,6 +100,7 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        broadcast = new FragmentBroadcast(getContext());
         MenuInflater inflater = this.getMenuInflater();
         inflater.inflate(R.menu.music_tab_context_menu, menu);
         if (longPressItem != null)
@@ -94,14 +110,37 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.musicTabAddToPlaylist:
-                String name = "";
+            case R.id.musicTabAddToPlaylist: {
+                AddSongPlaylistDialog dialogFragment = new AddSongPlaylistDialog();
+                dialogFragment.setSong(longPressItem);
+                dialogFragment.show(getActivity().getFragmentManager(),"addplaylist");
                 return true;
-            case R.id.musicTabAddToNowPlaying:
+            }
+            case R.id.musicTabAddAllToNowPlaying: {
+                Bundle bundle = new Bundle();
+                ArrayList<Song> listSong = new ArrayList<>();
+                for (Song _song:this.listSong) {
+                    Song s = new Song();
+                    s.setUrl(_song.getUrl());
+                    s.setId(_song.getId());
+                    listSong.add(s);
+                }
+                bundle.putParcelableArrayList(FragmentBroadcast.ADD_ALL_SONG_NOW_PLAYING, listSong);
+                broadcast.send(FragmentBroadcast.ADD_ALL_SONG_NOW_PLAYING, bundle);
                 return true;
-            case R.id.musicTabDeleteMusic:
+            }
+            case R.id.musicTabAddToNowPlaying: {
+                Bundle bundle = new Bundle();
+                Song s = new Song();
+                s.setUrl(longPressItem.getUrl());
+                s.setId(longPressItem.getId());
+                bundle.putParcelable(FragmentBroadcast.ADD_SONG_NOW_PLAYING, s);
+                broadcast.send(FragmentBroadcast.ADD_SONG_NOW_PLAYING, bundle);
+                return true;
+            }
+            case R.id.musicTabDeleteMusic: {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Delete " + item.getTitle() + " ?");
+                builder.setTitle("Delete " + longPressItem.getTitle() + " ?");
                 builder.setMessage("Are you sure?");
                 builder.setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
@@ -112,14 +151,20 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
                                     int row = getActivity().getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                                             MediaStore.Audio.Media._ID + " = " + longPressItem.getId(), null);
                                     if (row != 0) {
-                                        listSong.remove(longPressItem);
-                                        arrayAdapter.remove(longPressItem);
-                                        arrayAdapter.notifyDataSetChanged();
                                         File songNeedDelete = new File(longPressItem.getUrl());
                                         if (songNeedDelete.exists()) {
                                             //remove in Sdcard
                                             if (songNeedDelete.delete()) {
-                                            } else {
+                                                //broadcast la file bi xoa roi
+                                                Bundle bundle = new Bundle();
+                                                Song s = new Song();
+                                                s.setUrl(longPressItem.getUrl());
+                                                s.setId(longPressItem.getId());
+                                                bundle.putParcelable(FragmentBroadcast.DELETE_SONG_IN_DB, s);
+                                                broadcast.send(FragmentBroadcast.DELETE_SONG_IN_DB, bundle);
+                                                 listSong.remove(longPressItem);
+                                                arrayAdapter.remove(longPressItem);
+                                                arrayAdapter.notifyDataSetChanged();
                                             }
                                         }
                                     }
@@ -135,6 +180,7 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
                         .create()
                         .show();
                 return true;
+            }
             default:
                 return super.onContextItemSelected(item);
         }
@@ -145,4 +191,25 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
         longPressItem = listSong.get(position);
         return false;
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        listener.playThisSong(listSong.get(position));
+    }
+
+    public void refreshFragment() {
+        listSong.clear();
+        arrayAdapter = new ListViewMusicAdapter(getActivity(), R.layout.list_view_cell_music, listSong);
+        arrayAdapter.setNotifyOnChange(true);
+        lvMusic.setAdapter(arrayAdapter);
+        registerForContextMenu(lvMusic);
+        lvMusic.setOnItemLongClickListener(this);
+        lvMusic.setOnItemClickListener(this);
+        //        loadTab();
+        MusicTabAsynTask musicTabAsynTask = new MusicTabAsynTask(this);
+        //Gọi hàm execute để kích hoạt tiến trình
+        musicTabAsynTask.execute();
+
+    }
+
 }

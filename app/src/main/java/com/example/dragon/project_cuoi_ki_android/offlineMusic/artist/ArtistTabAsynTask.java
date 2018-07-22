@@ -60,4 +60,5 @@ public class ArtistTabAsynTask extends AsyncTask<Integer,Artist,Integer> {
         listArtist.add(values[0]);
         super.onProgressUpdate(values);
     }
+
 }

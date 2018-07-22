@@ -31,6 +31,14 @@ public class RecycleViewCustomAdapter extends RecyclerView.Adapter<RecycleViewCu
         this.resource = resource;
     }
 
+    public List<Album> getArrAlbum() {
+        return arrAlbum;
+    }
+
+    public void addAlbum(Album Album) {
+        this.arrAlbum.add(Album);
+    }
+
     // inflates the cell layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="0dp"
+
+    >
+    <Button
+        android:id="@+id/playlist_dialog_add_new_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_add_black_24dp"
+        android:textColor="@color/white"
+        android:text="Add to new Playlist"
+        android:background="@android:color/transparent"
+        android:layout_gravity="top"
+        />
+</RelativeLayout>

@@ -20,7 +20,7 @@
             android:minHeight="180dp"
             android:minWidth="180dp"
             android:adjustViewBounds="true"
-            android:scaleType="fitStart"
+            android:scaleType="centerCrop"
             android:layout_gravity="start"
             android:layout_weight="70"
             />

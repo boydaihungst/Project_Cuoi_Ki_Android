@@ -8,7 +8,8 @@
     <string name="action_settings">Settings</string>
     <string name="toast_close_mess">Please click Back again to exit!</string>
     <string name="title_activity_settings">Settings</string>
-
+    <string name="title_activity_windown"></string>
+    <string name="share_body">Click vào đây để tải app nghe nhạc nào :D </string>
     <!-- Strings related to Settings -->
     <!--play musdic/video-->
     <!--array quanlity music-->
@@ -69,7 +70,7 @@
 
     <string name="TitleMusicPager">Musics</string>
     <!--String [] TabTile= {"Songs","Albums","Artists","folders"-->
-<string-array name="tab_title">
+<string-array name="music_tab_title">
     <item>Songs</item>
     <item>Albums</item>
     <item>Artists</item>

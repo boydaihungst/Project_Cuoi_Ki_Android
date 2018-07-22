@@ -64,7 +64,6 @@ public class ListViewMusicAdapter extends ArrayAdapter<Song> {
         TextView tvSongName, tvSongType, tvArtist, tvSongDuration;
         ImageView tvSongPicture;
     }
-
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
