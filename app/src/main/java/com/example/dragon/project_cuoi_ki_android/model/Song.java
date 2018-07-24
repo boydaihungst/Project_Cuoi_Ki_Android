@@ -64,13 +64,6 @@ public class Song implements Parcelable {
             return new Song[size];
         }
     };
-    public String durationToMinute()  {
-        double durationMinute = duration / 60000.0;
-        int _durationSecond = ((int) ((durationMinute - (int) durationMinute) * 60));
-        String durationSecond = String.valueOf(_durationSecond);
-        durationSecond = durationSecond.length() == 1 ? "0" + durationSecond : durationSecond;
-        return (int) durationMinute + ":" + durationSecond;
-    }
 
     public String getLyrics() {
         return lyrics;

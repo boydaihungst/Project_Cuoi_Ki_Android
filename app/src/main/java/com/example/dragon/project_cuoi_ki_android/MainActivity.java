@@ -9,7 +9,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -43,6 +44,7 @@ import com.example.dragon.project_cuoi_ki_android.Controller.ClientReceiver;
 import com.example.dragon.project_cuoi_ki_android.Controller.NotificationMaker;
 import com.example.dragon.project_cuoi_ki_android.Controller.ServiceReceiver;
 import com.example.dragon.project_cuoi_ki_android.Controller.PlayerService;
+import com.example.dragon.project_cuoi_ki_android.Utils.Utils;
 import com.example.dragon.project_cuoi_ki_android.player.PlayerPlaylistTabFragment;
 import com.example.dragon.project_cuoi_ki_android.player.PlayerTabFragment;
 import com.example.dragon.project_cuoi_ki_android.player.PlayerViewPagerAdapter;
@@ -53,6 +55,7 @@ import com.example.dragon.project_cuoi_ki_android.offlineMusic.music.MusicTabFra
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity
@@ -487,15 +490,13 @@ public class MainActivity extends AppCompatActivity
         sbSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                String currentPositionStr = millisecondsToString(progress);
-                tvCurDuration.setText(currentPositionStr);
+                    String currentPositionStr = Utils.millisecondsToString(progress);
+                    tvCurDuration.setText(currentPositionStr);
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 isSeekBarSeeking = true;
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 requestSeek(seekBar.getProgress());
@@ -522,7 +523,12 @@ public class MainActivity extends AppCompatActivity
             btnClose.setVisibility(View.VISIBLE);
         }
     }
-
+//change color player controller button
+    private void changeCtrlBtnColor(ImageView btn,int colorId){
+        PorterDuffColorFilter porterDuffColorFilter = new PorterDuffColorFilter(getResources().getColor(colorId),
+                PorterDuff.Mode.SRC_ATOP);
+        btn.setColorFilter(porterDuffColorFilter);
+    }
     // nhan du lieu tu MusicTabFragment
     @Override
     public void playThisSong(Song song) {
@@ -536,13 +542,12 @@ public class MainActivity extends AppCompatActivity
         this.listSongDB.add(newSong);
     }
 
-    public String millisecondsToString(int duration) {
-        double durationMinute = duration / 60000.0;
-        int _durationSecond = ((int) ((durationMinute - (int) durationMinute) * 60));
-        String durationSecond = String.valueOf(_durationSecond);
-        durationSecond = durationSecond.length() == 1 ? "0" + durationSecond : durationSecond;
-        return (int) durationMinute + ":" + durationSecond;
-    }
+
+//        double durationMinute = duration / 60000.0;
+//        int _durationSecond = ((int) ((durationMinute - (int) durationMinute) * 60));
+//        String durationSecond = String.valueOf(_durationSecond);
+//        durationSecond = durationSecond.length() == 1 ? "0" + durationSecond : durationSecond;
+//        return (int) durationMinute + ":" + durationSecond;
 
     public ArrayList<Song> getListSong() {
         return listSong;
@@ -556,11 +561,11 @@ public class MainActivity extends AppCompatActivity
         tvTitleSong.setText(song.getTitle());
         tvTitleArtist.setText(song.getArtist());
         tvCurDuration.setText("0:00");
-        tvDuration.setText(song.durationToMinute());
+        tvDuration.setText(Utils.millisecondsToString(song.getDuration()));
         sbSeeker.setMax(song.getDuration());
         sbSeeker.setProgress(0);
         ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
-        btnPlay.setImageResource(R.drawable.pause);
+        btnPlay.setImageResource(R.drawable.ic_pause);
         System.out.println(song.getPicture() == null);
         //update UI player
         playerViewPagerAdapter.updateFirstFragment(song, ServiceReceiver.PLAY);
@@ -591,7 +596,7 @@ public class MainActivity extends AppCompatActivity
 
     public void updateProgress(int currentPosition) {
         if (!isSeekBarSeeking && isPlayState) {
-            String currentPositionStr = millisecondsToString(currentPosition);
+            String currentPositionStr = Utils.millisecondsToString(currentPosition);
             tvCurDuration.setText(currentPositionStr);
             sbSeeker.setProgress(currentPosition);
         }
@@ -603,8 +608,7 @@ public class MainActivity extends AppCompatActivity
         try {
             ((PlayerTabFragment) playerViewPagerAdapter.getTabFragment()[1]).setData(null, true);
             ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
-            ((BitmapDrawable)btnPlay.getDrawable()).getBitmap().recycle();
-            btnPlay.setImageResource(R.drawable.play_button);
+            btnPlay.setImageResource(R.drawable.ic_play_button);
             sbSeeker.setProgress(0);
         } catch (NullPointerException e) {
 
@@ -617,18 +621,20 @@ public class MainActivity extends AppCompatActivity
 
     public void responseLoop() {
         ImageView btnRepeat = (ImageView) findViewById(R.id.player_btn_repeat);
-        ((BitmapDrawable)btnRepeat.getDrawable()).getBitmap().recycle();
         switch (loopMode) {
             case PlayerService.loopMode_NO: {
-                btnRepeat.setImageResource(R.drawable.repeat_default);
+                btnRepeat.setImageResource(R.drawable.ic_repeat);
+                changeCtrlBtnColor(btnRepeat,R.color.white);
                 break;
             }
             case PlayerService.loopMode_SINGLE: {
-                btnRepeat.setImageResource(R.drawable.repeat_single);
+                btnRepeat.setImageResource(R.drawable.ic_repeat_single);
+                changeCtrlBtnColor(btnRepeat,R.color.colorAccent);
                 break;
             }
             case PlayerService.loopMode_ALL: {
-                btnRepeat.setImageResource(R.drawable.repeat_all);
+                btnRepeat.setImageResource(R.drawable.ic_repeat);
+                changeCtrlBtnColor(btnRepeat,R.color.colorAccent);
                 break;
             }
         }
@@ -644,8 +650,7 @@ public class MainActivity extends AppCompatActivity
         try {
             ((PlayerTabFragment) playerViewPagerAdapter.getTabFragment()[1]).setData(null, true);
             ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
-            ((BitmapDrawable)btnPlay.getDrawable()).getBitmap().recycle();
-            btnPlay.setImageResource(R.drawable.play_button);
+            btnPlay.setImageResource(R.drawable.ic_play_button);
         } catch (NullPointerException e) {
 
         }
@@ -679,11 +684,10 @@ public class MainActivity extends AppCompatActivity
 
     public void responseShuffle(boolean isShuffle) {
         ImageView btnShuffle = (ImageView) findViewById(R.id.player_btn_shuffle);
-        ((BitmapDrawable)btnShuffle.getDrawable()).getBitmap().recycle();
         if (isShuffle) {
-            btnShuffle.setImageResource(R.drawable.shuffle);
+            changeCtrlBtnColor(btnShuffle,R.color.colorAccent);
         } else {
-            btnShuffle.setImageResource(R.drawable.shuffle_default);
+            changeCtrlBtnColor(btnShuffle,R.color.white);
         }
     }
 
@@ -709,8 +713,7 @@ public class MainActivity extends AppCompatActivity
     public void responseResume() {
         isPlayState = true;
         ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
-        ((BitmapDrawable)btnPlay.getDrawable()).getBitmap().recycle();
-        btnPlay.setImageResource(R.drawable.pause);
+        btnPlay.setImageResource(R.drawable.ic_pause);
         notification.updateNotification(this, null, true);
         try {
             ((PlayerTabFragment) playerViewPagerAdapter.getTabFragment()[1]).setData(null, false);
@@ -810,8 +813,7 @@ public class MainActivity extends AppCompatActivity
         sbSeeker.setMax(0);
         sbSeeker.setProgress(0);
         ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
-        //((BitmapDrawable)btnPlay.getDrawable()).getBitmap().recycle();
-        btnPlay.setImageResource(R.drawable.play_button);
+        btnPlay.setImageResource(R.drawable.ic_play_button);
     }
 
     //============ han nhan tu fragment ===========//

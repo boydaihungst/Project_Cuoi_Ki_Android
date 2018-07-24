@@ -21,10 +21,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.dragon.project_cuoi_ki_android.Controller.FragmentBroadcast;
+import com.example.dragon.project_cuoi_ki_android.Controller.ServiceReceiver;
 import com.example.dragon.project_cuoi_ki_android.R;
 import com.example.dragon.project_cuoi_ki_android.Utils.Utils;
 import com.example.dragon.project_cuoi_ki_android.model.Song;
 import com.example.dragon.project_cuoi_ki_android.offlineMusic.playlist.AddSongPlaylistDialog;
+import com.example.dragon.project_cuoi_ki_android.player.PlayerPlaylistTabFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
     private Song longPressItem;
     private ArrayAdapter arrayAdapter;
     private FragmentBroadcast broadcast;
+    private AsyncTask sendAllSongTask;
 
     public MusicTabFragment() {
     }
@@ -80,6 +83,7 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
 
     public interface dataTransaction {
         void playThisSong(Song song);
+
         void updateListSongDB(Song listSongInDB);
     }
 
@@ -113,20 +117,30 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
             case R.id.musicTabAddToPlaylist: {
                 AddSongPlaylistDialog dialogFragment = new AddSongPlaylistDialog();
                 dialogFragment.setSong(longPressItem);
-                dialogFragment.show(getActivity().getFragmentManager(),"addplaylist");
+                dialogFragment.show(getActivity().getFragmentManager(), "addplaylist");
                 return true;
             }
             case R.id.musicTabAddAllToNowPlaying: {
-                Bundle bundle = new Bundle();
-                ArrayList<Song> listSong = new ArrayList<>();
-                for (Song _song : this.listSong) {
-                    Song s = new Song();
-                    s.setUrl(_song.getUrl());
-                    s.setId(_song.getId());
-                    listSong.add(s);
+                if (sendAllSongTask != null && sendAllSongTask.getStatus() == AsyncTask.Status.RUNNING && sendAllSongTask.isCancelled()) {
+                    sendAllSongTask.cancel(true);
                 }
-                bundle.putParcelableArrayList(FragmentBroadcast.ADD_ALL_SONG_NOW_PLAYING, listSong);
-                broadcast.send(FragmentBroadcast.ADD_ALL_SONG_NOW_PLAYING, bundle);
+                sendAllSongTask = new AsyncTask<Void, Void, Void>() {
+                    ArrayList<Song> tempListSong = new ArrayList<>();
+
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        for (Song _song : listSong) {
+                            Song s = new Song();
+                            s.setUrl(_song.getUrl());
+                            s.setId(_song.getId());
+                            tempListSong.add(s);
+                        }
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelableArrayList(FragmentBroadcast.ADD_ALL_SONG_NOW_PLAYING, tempListSong);
+                        broadcast.send(FragmentBroadcast.ADD_ALL_SONG_NOW_PLAYING, bundle);
+                        return null;
+                    }
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 return true;
             }
             case R.id.musicTabAddToNowPlaying: {
@@ -162,7 +176,7 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
                                                 s.setId(longPressItem.getId());
                                                 bundle.putParcelable(FragmentBroadcast.DELETE_SONG_IN_DB, s);
                                                 broadcast.send(FragmentBroadcast.DELETE_SONG_IN_DB, bundle);
-                                                 listSong.remove(longPressItem);
+                                                listSong.remove(longPressItem);
                                                 arrayAdapter.remove(longPressItem);
                                                 arrayAdapter.notifyDataSetChanged();
                                             }

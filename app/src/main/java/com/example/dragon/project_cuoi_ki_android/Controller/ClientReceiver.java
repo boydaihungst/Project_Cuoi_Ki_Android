@@ -119,7 +119,7 @@ public class ClientReceiver extends BroadcastReceiver {
                     break;
                 }
                 case ServiceReceiver.CURRENT_POSITION: {
-                    int currentPosition = bundle.getInt(ServiceReceiver.CURRENT_POSITION);
+                    int currentPosition = intent.getIntExtra(ServiceReceiver.CURRENT_POSITION,0);
                     this.context.updateProgress(currentPosition);
                     break;
                 }

@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:gravity="center">
-
+    android:gravity="center"
+    android:background="#90000000">
     <ImageView
         android:id="@+id/noti_picture"
         android:layout_width="50dp"
@@ -22,26 +22,29 @@
         android:layout_toStartOf="@+id/noti_control_wrap"
         android:orientation="vertical"
         android:layout_centerInParent="true"
+
         android:paddingStart="15dp">
 
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/noti_tvSongName"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textSize="16sp"
             android:text="Ten Bai Hat"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+            style="@style/TextAppearance.Compat.Notification.Title"/>
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/noti_tvArtistName"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Ten ca si"
-            android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            style="@style/TextAppearance.Compat.Notification.Title"
+            android:text="Ten ca si"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/noti_control_wrap"

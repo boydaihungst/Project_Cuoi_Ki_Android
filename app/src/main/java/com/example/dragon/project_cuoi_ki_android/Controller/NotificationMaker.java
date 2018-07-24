@@ -7,9 +7,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.session.MediaSession;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.example.dragon.project_cuoi_ki_android.MainActivity;
 import com.example.dragon.project_cuoi_ki_android.R;
@@ -25,6 +27,7 @@ public class NotificationMaker {
     @SuppressLint("RestrictedApi")
     public void showNotification(Context context){
         if(nc == null) {
+            //
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification);
             nc = new NotificationCompat.Builder(context);
             nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -37,10 +40,11 @@ public class NotificationMaker {
             nc.setCustomContentView(remoteViews);
             nc.setContentTitle("Music player");
             nc.setContentText("Music player");
+            nc.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
             nc.setPriority(Notification.PRIORITY_MAX);
             nc.setOngoing(true);
+            nc.setDefaults(Notification.COLOR_DEFAULT);
             nc.getContentView().setTextViewText(R.id.noti_tvSongName, "Ten bai hat");
-            nc.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle());
             setListener(remoteViews, context);
         }
         nm.notify(NOTIF_ID, nc.build());
@@ -62,6 +66,7 @@ public class NotificationMaker {
     }
     public void updateNotification(Context context,Song song,boolean isPlayBtn){
         if(song !=null) {
+
             // update the icon
             if(song.getPicture() !=null) {
                 remoteViews.setImageViewBitmap(R.id.noti_picture, song.getPicture());
@@ -99,4 +104,5 @@ public class NotificationMaker {
             nm.cancel(NOTIF_ID);
         }
     }
+
 }

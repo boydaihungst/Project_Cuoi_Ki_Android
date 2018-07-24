@@ -22,7 +22,7 @@
         android:layout_gravity="start"
         app:itemTextColor="@color/color_nav_state"
         app:itemIconTint="@color/color_nav_state"
-        android:background="@color/black_overlay"
+        android:background="@color/colorPrimary"
         android:fitsSystemWindows="true"
         app:menu="@menu/activity_main_drawer" />
 

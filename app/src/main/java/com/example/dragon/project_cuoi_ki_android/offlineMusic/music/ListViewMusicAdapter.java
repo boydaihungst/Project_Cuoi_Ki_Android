@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dragon.project_cuoi_ki_android.R;
+import com.example.dragon.project_cuoi_ki_android.Utils.Utils;
 import com.example.dragon.project_cuoi_ki_android.model.Song;
 
 import java.util.ArrayList;
@@ -48,9 +49,7 @@ public class ListViewMusicAdapter extends ArrayAdapter<Song> {
         Song song = arrSong.get(position);
         viewHolder.tvSongName.setText(song.getTitle());
         viewHolder.tvSongType.setText(song.getType());
-        double durationMinute =song.getDuration()/60000.0;
-        String duration =(int)durationMinute+":"+Math.round((durationMinute - (int)durationMinute)*60);
-        viewHolder.tvSongDuration.setText(duration);
+        viewHolder.tvSongDuration.setText(Utils.millisecondsToString(song.getDuration()));
         if(song.getPicture()!=null) {
             viewHolder.tvSongPicture.setImageBitmap(song.getPicture());
         }else{

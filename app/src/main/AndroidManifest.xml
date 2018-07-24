@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,6 +15,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,21 +26,34 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".offlineMusic.album.AlbumTabShowActivity"
-            android:label="@string/title_activity_windown" />
+            android:label="@string/title_activity_windown"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".offlineMusic.playlist.PlaylistTabShowActivity"
-            android:label="@string/title_activity_windown" />
+            android:label="@string/title_activity_windown"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".Controller.PlayerService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".offlineMusic.artist.ArtistTabShowActivity" />
-        <activity android:name=".Controller.AboutUsActivity"></activity>
+        <activity android:name=".offlineMusic.artist.ArtistTabShowActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Controller.AboutUsActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

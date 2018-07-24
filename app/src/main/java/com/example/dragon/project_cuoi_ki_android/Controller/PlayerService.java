@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.media.session.MediaSession;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,7 @@ public class PlayerService extends Service {
     private Handler handler = new Handler();
     private int loopMode;
     private boolean isShuffle;
+    private boolean isSeeking;
 
     public PlayerService() {
         super();
@@ -50,11 +52,11 @@ public class PlayerService extends Service {
                 serviceReceiver.send(ServiceReceiver.PAUSE, bundle);
                 if (isShuffle) {
                     Random r = new Random();
-                    int index=0;
-                    if(listSong.size() >1) {
+                    int index = 0;
+                    if (listSong.size() > 1) {
                         index = r.nextInt(listSong.size() - 1);
-                    }else{
-                       return;
+                    } else {
+                        return;
                     }
                     currentSongPosition = index;
                     playSong();
@@ -63,11 +65,11 @@ public class PlayerService extends Service {
                 switch (loopMode) {
                     case loopMode_ALL: {
                         if (currentSongPosition == (listSong.size() - 1)) {
-                            currentSongPosition=0;
+                            currentSongPosition = 0;
                             playSong();
                             return;
                         }
-                       break;
+                        break;
                     }
                     case loopMode_SINGLE: {
                         playSong();
@@ -96,6 +98,8 @@ public class PlayerService extends Service {
         filter.addAction(ClientReceiver.RESUME);
         filter.addAction(ClientReceiver.LOOPING);
         filter.addAction(Intent.ACTION_HEADSET_PLUG);
+
+
         registerReceiver(serviceReceiver, filter);
     }
 
@@ -125,8 +129,9 @@ public class PlayerService extends Service {
     @Override
     public void onDestroy() {
         handler.removeCallbacks(sendData);
-        mp.stop();
-        mp = null;
+        if(mp!=null) {
+            mp.release();
+        }
         listSong.clear();
         unregisterReceiver(serviceReceiver);
         super.onDestroy();
@@ -158,11 +163,10 @@ public class PlayerService extends Service {
             try {
                 if (!mp.isPlaying()) handler.removeCallbacks(sendData);
                 // send thoi gian hien dang phat
-                Bundle bundle = new Bundle();
-                bundle.putInt(ServiceReceiver.CURRENT_POSITION, mp.getCurrentPosition());
-                serviceReceiver.send(ServiceReceiver.CURRENT_POSITION, bundle);
+                serviceReceiver.send(ServiceReceiver.CURRENT_POSITION,  mp.getCurrentPosition());
                 //
-                handler.postDelayed(this, 100);
+
+                handler.postDelayed(this, 500);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -298,18 +302,18 @@ public class PlayerService extends Service {
             Bundle bundle = new Bundle();
             bundle.putInt(ServiceReceiver.APEEND_LIST_SONG, _song.getId());
             serviceReceiver.send(ServiceReceiver.APEEND_LIST_SONG, bundle);
-        }else{
-            Log.d("Append error","");
+        } else {
+            Log.d("Append error", "");
         }
     }
 
     public void DeleteOneListSong(int _songId) {
         int songNeedRemovePosition = listSong.indexOf(_songId);
-        if(songNeedRemovePosition >=0){
+        if (songNeedRemovePosition >= 0) {
             listSong.remove(songNeedRemovePosition);
-        }else return;
+        } else return;
         if (songNeedRemovePosition == currentSongPosition) {
-            if(mp.isPlaying()) {
+            if (mp.isPlaying()) {
                 Stop();
                 currentSongPosition = 0;
                 playSong();
@@ -319,7 +323,7 @@ public class PlayerService extends Service {
             --currentSongPosition;
         }
         // response delete ok
-        serviceReceiver.send(ServiceReceiver.DELETE_ONE_FROM_LIST_SONG,_songId);
+        serviceReceiver.send(ServiceReceiver.DELETE_ONE_FROM_LIST_SONG, _songId);
         //
     }
 

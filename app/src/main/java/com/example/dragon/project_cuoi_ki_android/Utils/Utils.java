@@ -28,6 +28,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
     private Context context;
@@ -42,10 +43,13 @@ public class Utils {
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, parent.getWidth(), parent.getHeight(), false);
         return bitmapResized;
     }
-    public Bitmap resize(Drawable image, int height,int width) {
-        Bitmap b = ((BitmapDrawable) image).getBitmap();
-        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, width,height, false);
-        return bitmapResized;
+    public static String millisecondsToString(int duration) {
+
+        return String.format("%2d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(duration),
+                TimeUnit.MILLISECONDS.toSeconds(duration) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
+        );
     }
     public static String getLyric(String urlSong) {
         try {

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dragon.project_cuoi_ki_android.R;
+import com.example.dragon.project_cuoi_ki_android.Utils.Utils;
 import com.example.dragon.project_cuoi_ki_android.model.Song;
 import com.example.dragon.project_cuoi_ki_android.offlineMusic.album.RecycleViewCustomAdapter;
 
@@ -59,7 +60,7 @@ public class PlayerPlaylistTabRecyclerViewAdapter extends RecyclerView.Adapter<P
             }
             holder.tvSongName.setText(arrSong.get(position).getTitle());
             holder.tvArtist.setText(arrSong.get(position).getArtist());
-            holder.tvSongDuration.setText(arrSong.get(position).durationToMinute());
+            holder.tvSongDuration.setText(Utils.millisecondsToString(arrSong.get(position).getDuration()));
             holder.tvSongType.setText(arrSong.get(position).getType());
         }catch(Exception e){
             e.printStackTrace();
