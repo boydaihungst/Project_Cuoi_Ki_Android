@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
@@ -29,11 +31,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.dragon.project_cuoi_ki_android.Controller.AboutUsActivity;
 import com.example.dragon.project_cuoi_ki_android.Controller.FragmentBroadcast;
@@ -186,6 +188,13 @@ public class MainActivity extends AppCompatActivity
         slidingUpPanelLayout.addPanelSlideListener(this);
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         slidingUpPanelLayout.buildLayer();
+        slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                setPlayerButtonListenter();
+            }
+        });
+        //setPlayerButtonListenter();
         // player 3 view page
         if (playerViewPager == null) {
             playerViewPager = findViewById(R.id.player_pager_center);
@@ -412,7 +421,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPanelSlide(View panel, float slideOffset) {
-        setPlayerButtonListenter();
+//        Toast.makeText(this, "Sliding", Toast.LENGTH_SHORT).show();
+//        setPlayerButtonListenter();
     }
 
     public void setPlayerButtonListenter() {
@@ -423,6 +433,9 @@ public class MainActivity extends AppCompatActivity
         ImageView btnPrev = (ImageView) findViewById(R.id.player_btn_prev);
         ImageView btnShuffle = (ImageView) findViewById(R.id.player_btn_shuffle);
         ImageView btnLoop = (ImageView) findViewById(R.id.player_btn_repeat);
+        //set scrollable
+        slidingUpPanelLayout.setNestedScrollingEnabled(true);
+//        slidingUpPanelLayout.setScrollableView(v2);
         if (btnClose != null)
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -498,11 +511,14 @@ public class MainActivity extends AppCompatActivity
         }
         if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
             ImageView btnClose = (ImageView) findViewById(R.id.player_title_close_button);
-            btnClose.setVisibility(View.INVISIBLE);
+            ImageView icon =(ImageView)findViewById(R.id.player_icon_center);
+            btnClose.setImageDrawable(icon.getDrawable());
+            btnClose.setVisibility(View.VISIBLE);
         }
         if (newState == SlidingUpPanelLayout.PanelState.EXPANDED) {
             ImageView btnClose = (ImageView) findViewById(R.id.player_title_close_button);
             btnClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+            btnClose.setImageDrawable(getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
             btnClose.setVisibility(View.VISIBLE);
         }
     }
@@ -512,7 +528,7 @@ public class MainActivity extends AppCompatActivity
     public void playThisSong(Song song) {
         requestSongDeleteAll();
         requestAppendList(song);
-        requestPlay(song);
+        requestPlay(song.getId());
     }
 
     @Override
@@ -532,13 +548,6 @@ public class MainActivity extends AppCompatActivity
         return listSong;
     }
 
-    public ArrayList<Song> getListSongDB() {
-        return listSongDB;
-    }
-
-    public void setListSongDB(ArrayList<Song> listSongDB) {
-        this.listSongDB = listSongDB;
-    }
 //====================================== Function quản lí trình chơi nhạc====================================//
 
     //=======ham nhan tu service=========//
@@ -552,10 +561,32 @@ public class MainActivity extends AppCompatActivity
         sbSeeker.setProgress(0);
         ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
         btnPlay.setImageResource(R.drawable.pause);
+        System.out.println(song.getPicture() == null);
+        //update UI player
         playerViewPagerAdapter.updateFirstFragment(song, ServiceReceiver.PLAY);
         playerViewPagerAdapter.updateSecondFragment(song);
         playerViewPagerAdapter.updateThirdFragment(song);
+        //update UI notification
         notification.updateNotification(this, song, true);
+        //update small icon player
+
+        slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int width = slidingUpPanelLayout.getWidth();
+                int height = slidingUpPanelLayout.getHeight();
+                if (width > 0 && height > 0) {
+                    slidingUpPanelLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                        ImageView btnClose = (ImageView) findViewById(R.id.player_title_close_button);
+                        ImageView icon =(ImageView)findViewById(R.id.player_icon_center);
+                        btnClose.setImageDrawable(icon.getDrawable());
+                        btnClose.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+        System.gc();
     }
 
     public void updateProgress(int currentPosition) {
@@ -563,7 +594,6 @@ public class MainActivity extends AppCompatActivity
             String currentPositionStr = millisecondsToString(currentPosition);
             tvCurDuration.setText(currentPositionStr);
             sbSeeker.setProgress(currentPosition);
-        } else {
         }
     }
 
@@ -573,6 +603,7 @@ public class MainActivity extends AppCompatActivity
         try {
             ((PlayerTabFragment) playerViewPagerAdapter.getTabFragment()[1]).setData(null, true);
             ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
+            ((BitmapDrawable)btnPlay.getDrawable()).getBitmap().recycle();
             btnPlay.setImageResource(R.drawable.play_button);
             sbSeeker.setProgress(0);
         } catch (NullPointerException e) {
@@ -586,6 +617,7 @@ public class MainActivity extends AppCompatActivity
 
     public void responseLoop() {
         ImageView btnRepeat = (ImageView) findViewById(R.id.player_btn_repeat);
+        ((BitmapDrawable)btnRepeat.getDrawable()).getBitmap().recycle();
         switch (loopMode) {
             case PlayerService.loopMode_NO: {
                 btnRepeat.setImageResource(R.drawable.repeat_default);
@@ -612,6 +644,7 @@ public class MainActivity extends AppCompatActivity
         try {
             ((PlayerTabFragment) playerViewPagerAdapter.getTabFragment()[1]).setData(null, true);
             ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
+            ((BitmapDrawable)btnPlay.getDrawable()).getBitmap().recycle();
             btnPlay.setImageResource(R.drawable.play_button);
         } catch (NullPointerException e) {
 
@@ -619,17 +652,34 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void responseAppendList(int songId) {
-        for (Song s : this.listSongDB) {
-            if (s.getId() == songId) {
-                this.listSong.add(s);
-                ((PlayerPlaylistTabFragment) playerViewPagerAdapter.getTabFragment()[0]).setData(s, ServiceReceiver.APEEND_LIST_SONG);
-                return;
+        new AsyncTask<Integer, Song, Song>() {
+            @Override
+            protected Song doInBackground(Integer ... params) {
+                for (Song s : listSongDB) {
+                    if (s.getId() == params[0]) {
+                        listSong.add(s);
+                        publishProgress(s);
+                        break;
+                    }
+                }
+                return null;
             }
-        }
+            @Override
+            protected void onProgressUpdate(Song... values) {
+                try {
+                    ((PlayerPlaylistTabFragment) playerViewPagerAdapter.getTabFragment()[0]).setData(values[0], ServiceReceiver.APEEND_LIST_SONG);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                super.onProgressUpdate(values);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,songId);
+
     }
 
     public void responseShuffle(boolean isShuffle) {
         ImageView btnShuffle = (ImageView) findViewById(R.id.player_btn_shuffle);
+        ((BitmapDrawable)btnShuffle.getDrawable()).getBitmap().recycle();
         if (isShuffle) {
             btnShuffle.setImageResource(R.drawable.shuffle);
         } else {
@@ -647,21 +697,19 @@ public class MainActivity extends AppCompatActivity
 
     public void responseUpdatePlaylistTab() {
         try {
-            viewPagerAdapter.updateFragmentExcept(viewPager.getCurrentItem());
+            viewPagerAdapter.updateSingleFragment(3);
         } catch (NullPointerException e) {
         }
     }
 
     public void responseDeleteAllFromList() {
-        try {
-            ((PlayerPlaylistTabFragment) playerViewPagerAdapter.getTabFragment()[0]).setData(null, ServiceReceiver.DELETE_ALL_FROM_LIST_SONG);
-        } catch (NullPointerException e) {
-        }
+
     }
 
     public void responseResume() {
         isPlayState = true;
         ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
+        ((BitmapDrawable)btnPlay.getDrawable()).getBitmap().recycle();
         btnPlay.setImageResource(R.drawable.pause);
         notification.updateNotification(this, null, true);
         try {
@@ -671,80 +719,71 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void responseHeadsetUnplug() {
-        try {
-
-        } catch (NullPointerException e) {
-        }
-    }
 
     //++++++ham gui den service ++++++++//
-    public void requestPlay(Song song) {
+    public void requestPlay(int songId) {
         if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.HIDDEN) {
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             notification.showNotification(this);
         }
-        Song s = new Song();
-        s.setId(song.getId());
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ClientReceiver.PLAY, s);
-        clientReceiver.send(ClientReceiver.PLAY, bundle);
+        clientReceiver.send(ClientReceiver.PLAY, songId);
     }
 
     public void requestStop() {
-        clientReceiver.send(ClientReceiver.STOP, new Bundle());
+        clientReceiver.send(ClientReceiver.STOP);
     }
 
     public void requestShuffe(boolean isShuffle) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(ClientReceiver.SHUFFLE, isShuffle);
-        clientReceiver.send(ClientReceiver.SHUFFLE, bundle);
+        clientReceiver.send(ClientReceiver.SHUFFLE, isShuffle);
     }
 
     public void requestPause() {
-        clientReceiver.send(ClientReceiver.PAUSE, new Bundle());
+        clientReceiver.send(ClientReceiver.PAUSE);
     }
 
     public void requestResume() {
-        clientReceiver.send(ClientReceiver.RESUME, new Bundle());
+        clientReceiver.send(ClientReceiver.RESUME);
     }
 
     public void requestNext() {
-        clientReceiver.send(ClientReceiver.NEXT, new Bundle());
+        clientReceiver.send(ClientReceiver.NEXT);
     }
 
     public void requestLooping(int loopMode) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(ClientReceiver.LOOPING, loopMode);
-        clientReceiver.send(ClientReceiver.LOOPING, bundle);
+        clientReceiver.send(ClientReceiver.LOOPING, loopMode);
     }
 
     public void requestPrev() {
-        clientReceiver.send(ClientReceiver.PREV, new Bundle());
+        clientReceiver.send(ClientReceiver.PREV);
     }
 
     public void requestAppendList(Song song) {
-        Song s = new Song();
-        s.setId(song.getId());
-        s.setUrl(song.getUrl());
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ClientReceiver.APEEND_LIST_SONG, s);
+        bundle.putParcelable(ClientReceiver.APEEND_LIST_SONG, song);
         clientReceiver.send(ClientReceiver.APEEND_LIST_SONG, bundle);
     }
 
     public void requestAppendListAndPlay(ArrayList<Song> listSong) {
-        for (Song _song : listSong) {
-            Song s = new Song();
-            s.setId(_song.getId());
-            s.setUrl(_song.getUrl());
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ClientReceiver.APEEND_LIST_SONG, s);
-            clientReceiver.send(ClientReceiver.APEEND_LIST_SONG, bundle);
-        }
-        if (!listSong.isEmpty()) requestPlay(listSong.get(0));
+        new AsyncTask<ArrayList<Song>, Song, Song>() {
+            @Override
+            protected Song doInBackground(ArrayList<Song> ... params) {
+                for (int i = 0;i< params[0].size();i++) {
+                    Song s =params[0].get(i);
+                    requestAppendList(s);
+                    if(i==0){
+                        publishProgress(s);
+                    }
+                }
 
+                return null;
+            }
+            @Override
+            protected void onProgressUpdate(Song... values) {
+                requestPlay(values[0].getId());
+                super.onProgressUpdate(values);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,listSong);
     }
-
     public void requestSeek(int position) {
         isPlayState = true;
         Bundle bundle = new Bundle();
@@ -753,16 +792,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void requestSongDelete(Song song) {
-        Song s = new Song();
-        s.setId(song.getId());
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ClientReceiver.DELETE_ONE_FROM_LIST_SONG, s);
-        clientReceiver.send(ClientReceiver.DELETE_ONE_FROM_LIST_SONG, bundle);
+        clientReceiver.send(ClientReceiver.DELETE_ONE_FROM_LIST_SONG, song.getId());
     }
 
     public void requestSongDeleteAll() {
         listSong.clear();
-        clientReceiver.send(ClientReceiver.DELETE_ALL_FROM_LIST_SONG, new Bundle());
+        try {
+            ((PlayerPlaylistTabFragment) playerViewPagerAdapter.getTabFragment()[0]).setData(null, ServiceReceiver.DELETE_ALL_FROM_LIST_SONG);
+        } catch (NullPointerException e) {
+        }
+        clientReceiver.send(ClientReceiver.DELETE_ALL_FROM_LIST_SONG);
         //restore UI
         tvTitleSong.setText("");
         tvTitleArtist.setText("");
@@ -771,6 +810,7 @@ public class MainActivity extends AppCompatActivity
         sbSeeker.setMax(0);
         sbSeeker.setProgress(0);
         ImageView btnPlay = (ImageView) findViewById(R.id.player_btn_play);
+        //((BitmapDrawable)btnPlay.getDrawable()).getBitmap().recycle();
         btnPlay.setImageResource(R.drawable.play_button);
     }
 
@@ -779,6 +819,5 @@ public class MainActivity extends AppCompatActivity
         requestSongDelete(song);
         listSongDB.remove(song);
         viewPagerAdapter.updateFragmentExcept(viewPager.getCurrentItem());
-
     }
 }

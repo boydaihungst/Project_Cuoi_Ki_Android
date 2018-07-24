@@ -43,7 +43,23 @@ public class ServiceReceiver extends BroadcastReceiver {
         i.putExtras(bundle);
         context.sendBroadcast(i);
     }
-
+    public void send(String action,int value) {
+        Intent i = new Intent();
+        i.setAction(action);
+        i.putExtra(action, value);
+        context.sendBroadcast(i);
+    }
+    public void send(String action, boolean value) {
+        Intent i = new Intent();
+        i.setAction(action);
+        i.putExtra(action,value);
+        context.sendBroadcast(i);
+    }
+    public void send(String action) {
+        Intent i = new Intent();
+        i.setAction(action);
+        context.sendBroadcast(i);
+    }
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
@@ -54,8 +70,8 @@ public class ServiceReceiver extends BroadcastReceiver {
                     break;
                 }
                 case ClientReceiver.PLAY: {
-                    Song _song = bundle.getParcelable(ClientReceiver.PLAY);
-                    this.context.Play(_song);
+                    int _songId = intent.getIntExtra(ClientReceiver.PLAY,-99);
+                    this.context.Play(_songId);
                     break;
                 }
                 case ClientReceiver.NEXT: {
@@ -85,8 +101,8 @@ public class ServiceReceiver extends BroadcastReceiver {
                     break;
                 }
                 case ClientReceiver.DELETE_ONE_FROM_LIST_SONG: {
-                    Song _song = bundle.getParcelable(ClientReceiver.DELETE_ONE_FROM_LIST_SONG);
-                    this.context.DeleteOneListSong(_song);
+                    int _songId = intent.getIntExtra(ClientReceiver.DELETE_ONE_FROM_LIST_SONG,-99);
+                    this.context.DeleteOneListSong(_songId);
                     break;
                 }
                 case ClientReceiver.DELETE_ALL_FROM_LIST_SONG: {
@@ -94,7 +110,7 @@ public class ServiceReceiver extends BroadcastReceiver {
                     break;
                 }
                 case ClientReceiver.SHUFFLE: {
-                    boolean isShuffle = bundle.getBoolean(ClientReceiver.SHUFFLE);
+                    boolean isShuffle = intent.getBooleanExtra(ClientReceiver.SHUFFLE,false);
                     this.context.Shuffle(isShuffle);
                     break;
                 }
@@ -102,7 +118,7 @@ public class ServiceReceiver extends BroadcastReceiver {
                     //0-khong loop
                     //1-loop single
                     //2-loop all
-                    int loopMode = bundle.getInt(ClientReceiver.LOOPING);
+                    int loopMode = intent.getIntExtra(ClientReceiver.LOOPING,0);
                     this.context.Looping(loopMode);
                     break;
                 }

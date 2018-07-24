@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -178,7 +179,7 @@ public class PlaylistTabFragment extends Fragment implements
     public void refreshFragment() {
         playList.clear();
         PlaylistTabAsynTask playlistTabAsynTask = new PlaylistTabAsynTask(this);
-        playlistTabAsynTask.execute();
+        playlistTabAsynTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

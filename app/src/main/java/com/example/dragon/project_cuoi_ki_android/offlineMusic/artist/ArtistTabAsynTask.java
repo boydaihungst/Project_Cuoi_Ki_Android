@@ -32,7 +32,6 @@ public class ArtistTabAsynTask extends AsyncTask<Integer,Artist,Integer> {
                     String id = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists._ID));
                     String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
                     String numOfSong = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS));
-                    Log.d("artist founded", id + " \n" + title + "\n" + numOfSong+"\n");
                     Artist a = new Artist();
                     a.setId(Integer.parseInt(id));
                     a.setName(title);

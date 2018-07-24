@@ -46,7 +46,23 @@ public class ClientReceiver extends BroadcastReceiver {
         i.putExtras(bundle);
         context.sendBroadcast(i);
     }
-
+    public void send(String action,int value) {
+        Intent i = new Intent();
+        i.setAction(action);
+        i.putExtra(action, value);
+        context.sendBroadcast(i);
+    }
+    public void send(String action, boolean value) {
+        Intent i = new Intent();
+        i.setAction(action);
+        i.putExtra(action,value);
+        context.sendBroadcast(i);
+    }
+    public void send(String action) {
+        Intent i = new Intent();
+        i.setAction(action);
+        context.sendBroadcast(i);
+    }
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
@@ -58,8 +74,7 @@ public class ClientReceiver extends BroadcastReceiver {
                 }
                 case ServiceReceiver.PLAY: {
                     int currentSongPosition = bundle.getInt(ServiceReceiver.PLAY);
-                    ArrayList<Song> listSong = this.context.getListSong();
-                    this.context.responsePlay(listSong.get(currentSongPosition));
+                    this.context.responsePlay(this.context.getListSong().get(currentSongPosition));
                     break;
                 }
                 case ServiceReceiver.NEXT: {
@@ -93,8 +108,10 @@ public class ClientReceiver extends BroadcastReceiver {
                     break;
                 }
                 case ServiceReceiver.DELETE_ONE_FROM_LIST_SONG: {
-                    Song song = bundle.getParcelable(ServiceReceiver.DELETE_ONE_FROM_LIST_SONG);
-                    this.context.responseDeleteOneFromList(song);
+                    int songId = intent.getIntExtra(ServiceReceiver.DELETE_ONE_FROM_LIST_SONG,-99);
+                    Song temp = new Song();
+                    temp.setId(songId);
+                    this.context.responseDeleteOneFromList(temp);
                     break;
                 }
                 case ServiceReceiver.DELETE_ALL_FROM_LIST_SONG: {

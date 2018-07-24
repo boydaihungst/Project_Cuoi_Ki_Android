@@ -35,7 +35,7 @@ public class PlayerPlaylistTabFragment extends Fragment implements PlayerPlaylis
     private ArrayList<Song> listSong;
     private FragmentBroadcast receiver;
     private View lastPlayCell;
-
+    private Song currentPlaySong;
     public PlayerPlaylistTabFragment() {
     }
 
@@ -71,46 +71,46 @@ public class PlayerPlaylistTabFragment extends Fragment implements PlayerPlaylis
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listSong.clear();
-        adapter.notifyDataSetChanged();
-        Song s = new Song();
-        s.setTitle("");
-        s.setArtist("");
-        s.setDuration(0);
-        s.setTitle("");
-        listSong.add(s);
-        adapter.notifyItemInserted(listSong.indexOf(s));
     }
 
     public void setData(Song song, String action) {
         switch (action) {
             case ServiceReceiver.DELETE_ONE_FROM_LIST_SONG: {
                 int i = listSong.indexOf(song);
-                listSong.remove(song);
+                listSong.remove(i);
                 adapter.notifyItemRemoved(i);
                 return;
             }
             case ServiceReceiver.APEEND_LIST_SONG: {
                 listSong.add(song);
                 adapter.notifyItemInserted(listSong.indexOf(song));
-                Log.d("append","xx");
                 return;
             }
             case ServiceReceiver.DELETE_ALL_FROM_LIST_SONG: {
                 listSong.clear();
                 adapter.notifyDataSetChanged();
-                Log.d("delete","xx");
                 return;
             }
             case ServiceReceiver.PLAY: {
-                recyclerView.getLayoutManager().generateDefaultLayoutParams();
-                for (int i = 0; i < adapter.getItemCount(); i++) {
-                    if (adapter.getItem(i).equals(song)) {
-                        View view = recyclerView.getLayoutManager().findViewByPosition(i);
-                        toggleColor(lastPlayCell, R.color.white);
-                        toggleColor(view, R.color.colorAccent);
+                currentPlaySong=song;
+                recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int width = recyclerView.getWidth();
+                        int height = recyclerView.getHeight();
+                        if (width > 0 && height > 0) {
+                            recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            for (int i = 0; i < adapter.getItemCount(); i++) {
+                                if (adapter.getItem(i).equals(currentPlaySong)) {
+                                    View view = recyclerView.getLayoutManager().findViewByPosition(i);
+                                    toggleColor(lastPlayCell, R.color.white);
+                                    toggleColor(view, R.color.colorAccent);
+                                    break;
+                                }
+                            }
                         }
-                }
+                    }
+                });
                 return;
             }
         }
@@ -120,12 +120,7 @@ public class PlayerPlaylistTabFragment extends Fragment implements PlayerPlaylis
     public void onItemClick(View view, int position) {
         toggleColor(lastPlayCell, R.color.white);
         toggleColor(view, R.color.colorAccent);
-        Bundle bundle = new Bundle();
         Song temp = adapter.getItem(position);
-        Song s = new Song();
-        s.setId(temp.getId());
-        s.setUrl(temp.getUrl());
-        bundle.putParcelable(ClientReceiver.PLAY, s);
-        receiver.send(ClientReceiver.PLAY, bundle);
+        receiver.send(ClientReceiver.PLAY, temp.getId());
     }
 }

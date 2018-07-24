@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -72,7 +73,7 @@ public class ArtistTabFragment extends Fragment implements AdapterView.OnItemCli
     public void refeshFragment(){
         listArtist.clear();
         ArtistTabAsynTask artistTabAsynTask =new ArtistTabAsynTask(this);
-        artistTabAsynTask.execute();
+        artistTabAsynTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

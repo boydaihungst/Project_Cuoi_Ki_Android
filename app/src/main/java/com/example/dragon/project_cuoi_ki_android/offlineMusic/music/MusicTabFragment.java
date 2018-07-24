@@ -3,6 +3,7 @@ package com.example.dragon.project_cuoi_ki_android.offlineMusic.music;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
@@ -79,7 +80,6 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
 
     public interface dataTransaction {
         void playThisSong(Song song);
-
         void updateListSongDB(Song listSongInDB);
     }
 
@@ -119,7 +119,7 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
             case R.id.musicTabAddAllToNowPlaying: {
                 Bundle bundle = new Bundle();
                 ArrayList<Song> listSong = new ArrayList<>();
-                for (Song _song:this.listSong) {
+                for (Song _song : this.listSong) {
                     Song s = new Song();
                     s.setUrl(_song.getUrl());
                     s.setId(_song.getId());
@@ -194,7 +194,11 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        listener.playThisSong(listSong.get(position));
+        Song s = new Song();
+        Song selected = listSong.get(position);
+        s.setId(selected.getId());
+        s.setUrl(selected.getUrl());
+        listener.playThisSong(s);
     }
 
     public void refreshFragment() {
@@ -208,7 +212,7 @@ public class MusicTabFragment extends Fragment implements AdapterView.OnItemLong
         //        loadTab();
         MusicTabAsynTask musicTabAsynTask = new MusicTabAsynTask(this);
         //Gọi hàm execute để kích hoạt tiến trình
-        musicTabAsynTask.execute();
+        musicTabAsynTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 

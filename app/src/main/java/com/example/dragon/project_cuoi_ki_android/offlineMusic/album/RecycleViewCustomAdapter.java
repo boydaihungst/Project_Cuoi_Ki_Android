@@ -62,7 +62,7 @@ public class RecycleViewCustomAdapter extends RecyclerView.Adapter<RecycleViewCu
                 holder.ivAlbum.setImageResource(R.mipmap.music_picture_default);
             }
             holder.tvAlbumTitle.setText(arrAlbum.get(position).getTitle());
-            holder.tvAlbumNumSong.setText(arrAlbum.get(position).getNumAlbum()+" Songs");
+            holder.tvAlbumNumSong.setText(arrAlbum.get(position).getNumAlbum()+" Tracks");
             holder.tvAlbumArtist.setText(arrAlbum.get(position).getArtist());
         }catch(Exception e){
             e.printStackTrace();

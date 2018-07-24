@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/player_main_wrap"
     android:clickable="true"
     android:focusable="true"
-    >
+    android:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
+>
 
     <LinearLayout
         android:id="@+id/player_view_page"
@@ -29,17 +31,18 @@
             android:id="@+id/player_top_controller"
             android:clickable="true"
             android:focusable="true"
+            android:paddingRight="10dp"
             >
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:id="@+id/player_title_close_button"/>
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:id="@+id/player_title_close_button"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,22 +53,24 @@
                 android:clickable="true"
                 android:focusable="true"
                 >
+
                 <TextView
+                    android:id="@+id/player_title_song"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="TenBaiHat"
+                    android:layout_height="wrap_content"
                     android:baselineAligned="true"
                     android:ellipsize="end"
-                    android:textStyle="bold"
+                    android:singleLine="true"
+                    android:text="TenBaiHat"
                     android:textColor="@color/colorAccent"
                     android:textSize="20sp"
-                    android:id="@+id/player_title_song"
-                    />
+                    android:textStyle="bold" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Ten Ca si"
                     android:baselineAligned="true"
+                    android:singleLine="true"
                     android:ellipsize="end"
                     android:textColor="@color/white"
                     android:id="@+id/player_title_artist"/>
@@ -108,7 +113,7 @@
             android:id="@+id/player_current_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00:01"
+            android:text="00:00"
             android:textColor="@color/white"
 
             />
@@ -126,64 +131,102 @@
             android:id="@+id/player_max_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="03:42"
+            android:text="00:00"
             android:textColor="@color/white"/>
     </LinearLayout>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/player_controller_wrap"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player_btn_shuffle"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="10dp"
-            android:src="@drawable/shuffle_default"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="7dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:src="@drawable/shuffle_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_btn_prev"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player_btn_prev"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="10dp"
-            android:src="@drawable/previous_default"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:layout_marginBottom="7dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="7dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:src="@drawable/previous_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_btn_play"
+            app:layout_constraintStart_toEndOf="@+id/player_btn_shuffle"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player_btn_play"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="2dp"
-            android:src="@drawable/play_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="7dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:src="@drawable/play_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_btn_next"
+            app:layout_constraintStart_toEndOf="@+id/player_btn_prev"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player_btn_next"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="10dp"
-            android:src="@drawable/next_default"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="7dp"
+
+            android:layout_marginEnd="18dp"
+            android:layout_marginTop="7dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:src="@drawable/next_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_btn_repeat"
+            app:layout_constraintStart_toEndOf="@+id/player_btn_play"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/player_btn_repeat"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="10dp"
-            android:src="@drawable/repeat_default"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginEnd="26dp"
+            android:layout_marginTop="7dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"/>
-    </LinearLayout>
+            android:focusable="true"
+            android:src="@drawable/repeat_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/player_btn_next"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 </RelativeLayout>

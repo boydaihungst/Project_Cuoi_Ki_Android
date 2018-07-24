@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
@@ -23,23 +24,25 @@ public class NotificationMaker {
     private  PendingIntent pPlay;
     @SuppressLint("RestrictedApi")
     public void showNotification(Context context){
-        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification);
-        nc = new NotificationCompat.Builder(context);
-        nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent notifyIntent = new Intent(context, MainActivity.class);
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0,notifyIntent,PendingIntent.FLAG_CANCEL_CURRENT);
-        nc.setContentIntent(pendingIntent);
-        nc.setSmallIcon(R.drawable.ic_audiotrack_black_24dp);
-        nc.setAutoCancel(false);
-        nc.setCustomContentView(remoteViews);
-        nc.setContentTitle("Music player");
-        nc.setContentText("Music player");
-        nc.setPriority(Notification.PRIORITY_MAX);
-        nc.setOngoing(true);
-        nc.getContentView().setTextViewText(R.id.noti_tvSongName,"Ten bai hat");
-        nc.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle());
-        setListener(remoteViews,context);
+        if(nc == null) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification);
+            nc = new NotificationCompat.Builder(context);
+            nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            Intent notifyIntent = new Intent(context, MainActivity.class);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            nc.setContentIntent(pendingIntent);
+            nc.setSmallIcon(R.drawable.ic_audiotrack_black_24dp);
+            nc.setAutoCancel(false);
+            nc.setCustomContentView(remoteViews);
+            nc.setContentTitle("Music player");
+            nc.setContentText("Music player");
+            nc.setPriority(Notification.PRIORITY_MAX);
+            nc.setOngoing(true);
+            nc.getContentView().setTextViewText(R.id.noti_tvSongName, "Ten bai hat");
+            nc.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle());
+            setListener(remoteViews, context);
+        }
         nm.notify(NOTIF_ID, nc.build());
     }
     private void setListener(RemoteViews view ,Context context){
@@ -90,9 +93,10 @@ public class NotificationMaker {
             nm.notify(NOTIF_ID, nc.build());
     }
     public void turnOffNoti(){
-        nc.setOngoing(false);
-        nc.setAutoCancel(true);
-        nm.cancel(NOTIF_ID);
+        if(nc!=null && nm!=null) {
+            nc.setOngoing(false);
+            nc.setAutoCancel(true);
+            nm.cancel(NOTIF_ID);
+        }
     }
-
 }

@@ -27,7 +27,23 @@ public class FragmentBroadcast extends BroadcastReceiver {
         i.putExtras(bundle);
         context.sendBroadcast(i);
     }
-
+    public void send(String action,int value) {
+        Intent i = new Intent();
+        i.setAction(action);
+        i.putExtra(action, value);
+        context.sendBroadcast(i);
+    }
+    public void send(String action, boolean value) {
+        Intent i = new Intent();
+        i.setAction(action);
+        i.putExtra(action,value);
+        context.sendBroadcast(i);
+    }
+    public void send(String action) {
+        Intent i = new Intent();
+        i.setAction(action);
+        context.sendBroadcast(i);
+    }
     @Override
     public void onReceive(Context context, Intent intent) {
     }

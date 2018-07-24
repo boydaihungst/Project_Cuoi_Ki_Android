@@ -170,17 +170,16 @@ public class PlayerService extends Service {
     };
 
     //func control media player
-    public void Play(Song _song) {
+    public void Play(int _songId) {
         if (listSong.isEmpty()) {
             currentSongPosition = -1;
             return;
         } else
             currentSongPosition = 0;
         for (int i = 0; i < listSong.size(); i++) {
-            if (listSong.get(i).getId() == _song.getId()) {
+            if (listSong.get(i).getId() == _songId) {
                 currentSongPosition = i;
                 playSong();
-
                 break;
             }
         }
@@ -299,12 +298,16 @@ public class PlayerService extends Service {
             Bundle bundle = new Bundle();
             bundle.putInt(ServiceReceiver.APEEND_LIST_SONG, _song.getId());
             serviceReceiver.send(ServiceReceiver.APEEND_LIST_SONG, bundle);
+        }else{
+            Log.d("Append error","");
         }
     }
 
-    public void DeleteOneListSong(Song _song) {
-        int songNeedRemovePosition = listSong.indexOf(_song);
-        listSong.remove(_song);
+    public void DeleteOneListSong(int _songId) {
+        int songNeedRemovePosition = listSong.indexOf(_songId);
+        if(songNeedRemovePosition >=0){
+            listSong.remove(songNeedRemovePosition);
+        }else return;
         if (songNeedRemovePosition == currentSongPosition) {
             if(mp.isPlaying()) {
                 Stop();
@@ -316,9 +319,7 @@ public class PlayerService extends Service {
             --currentSongPosition;
         }
         // response delete ok
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ServiceReceiver.DELETE_ONE_FROM_LIST_SONG, _song);
-        serviceReceiver.send(ServiceReceiver.DELETE_ONE_FROM_LIST_SONG, bundle);
+        serviceReceiver.send(ServiceReceiver.DELETE_ONE_FROM_LIST_SONG,_songId);
         //
     }
 

@@ -41,7 +41,6 @@ public class AlbumTabAsynTask extends AsyncTask<Integer, Album, Integer> {
                     a.setArtist(artist);
                     a.setNumAlbum(Integer.parseInt(numOfSong));
                     a.setPicture(picture);
-                    Log.d("founded album", id + "=" + title + "=" + artist + "=" + numOfSong + "=" + picture);
                     publishProgress(a);
                 } while (cursor.moveToNext());
             }

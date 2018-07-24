@@ -42,7 +42,11 @@ public class Utils {
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, parent.getWidth(), parent.getHeight(), false);
         return bitmapResized;
     }
-
+    public Bitmap resize(Drawable image, int height,int width) {
+        Bitmap b = ((BitmapDrawable) image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, width,height, false);
+        return bitmapResized;
+    }
     public static String getLyric(String urlSong) {
         try {
             AudioFile f = AudioFileIO.read(new File(urlSong));

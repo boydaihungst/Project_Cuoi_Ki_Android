@@ -72,28 +72,30 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         //return title cho tab
         return tabTitle[position];
     }
-
+public void updateSingleFragment(int postion){
+    switch (postion) {
+        case 0: {
+            ((MusicTabFragment) tabFragment[0]).refreshFragment();
+            break;
+        }
+        case 1: {
+            ((AlbumTabFragment) tabFragment[1]).refreshFragment();
+            break;
+        }
+        case 2: {
+            ((ArtistTabFragment) tabFragment[2]).refeshFragment();
+            break;
+        }
+        case 3: {
+            ((PlaylistTabFragment) tabFragment[3]).refreshFragment();
+            break;
+        }
+    }
+}
     public void updateFragmentExcept(int exceptFragment) {
         for (int i = 0; i < tabFragment.length; i++) {
             if (exceptFragment != i) {
-                switch (i) {
-                    case 0: {
-                        ((MusicTabFragment) tabFragment[0]).refreshFragment();
-                        break;
-                    }
-                    case 1: {
-                        ((AlbumTabFragment) tabFragment[1]).refreshFragment();
-                        break;
-                    }
-                    case 2: {
-                        ((ArtistTabFragment) tabFragment[2]).refeshFragment();
-                        break;
-                    }
-                    case 3: {
-                        ((PlaylistTabFragment) tabFragment[3]).refreshFragment();
-                        break;
-                    }
-                }
+                updateSingleFragment(i);
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.dragon.project_cuoi_ki_android.offlineMusic.album;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -78,6 +79,6 @@ public class AlbumTabFragment extends Fragment implements RecycleViewCustomAdapt
         rvAlbum.setLayoutManager(new GridLayoutManager(getActivity(), numberOfColumns));
         adapter.setClickListener(this);
         AlbumTabAsynTask albumTabAsynTask = new AlbumTabAsynTask(this);
-        albumTabAsynTask.execute();
+        albumTabAsynTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }
